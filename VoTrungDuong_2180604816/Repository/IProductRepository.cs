@@ -9,6 +9,5 @@ namespace VoTrungDuong_2180604816.Repository
         Task AddAsync(Product product);
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
-
     }
 }

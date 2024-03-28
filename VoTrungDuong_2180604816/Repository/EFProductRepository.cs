@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VoTrungDuong_2180604816.Models;
+using VoTrungDuong_2180604816.Repository;
 
-namespace VoTrungDuong_2180604816.Repository
+namespace TranDuyKhoa_2180605345.Repositories
 {
     public class EFProductRepository : IProductRepository
     {
@@ -12,7 +13,7 @@ namespace VoTrungDuong_2180604816.Repository
         }
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            return await _context.Products.Include(x=>x.Category).ToListAsync();
+            return await _context.Products.Include(x => x.Category).ToListAsync();
         }
         public async Task<Product> GetByIdAsync(int id)
         {
@@ -33,7 +34,7 @@ namespace VoTrungDuong_2180604816.Repository
             var product = await _context.Products.FindAsync(id);
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
-
         }
+
     }
 }
