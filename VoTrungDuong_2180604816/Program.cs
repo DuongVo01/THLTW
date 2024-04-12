@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TranDuyKhoa_2180605345.Repositories;
 using VoTrungDuong_2180604816.Models;
@@ -8,7 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+// Đặt trước AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
  .AddDefaultTokenProviders()
@@ -40,6 +48,9 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStaticFiles();
 
+// Đặt trước UseRouting
+app.UseSession();
+// Các middleware khác...
 app.UseRouting();
 app.UseAuthentication();
 
@@ -48,13 +59,14 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Product}/{action=Index}/{id?}");
-
+app.MapControllerRoute(
+    name: "Admin",
+    pattern: "{area:exists}/{controller=Product}/{action=Index}/{id?}");
 app.MapRazorPages();
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute(name: "Admin", pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-    endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
-});
+
+
+
+
 
 app.Run();
